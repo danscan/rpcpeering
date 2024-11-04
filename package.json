@@ -1,0 +1,12 @@
+{
+  "name": "danscanrpc",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@vue/cli-service": "^5.0.8"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
