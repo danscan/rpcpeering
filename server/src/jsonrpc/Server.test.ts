@@ -127,3 +127,16 @@ describe('Server', () => {
     ]);
   });
 });
+
+describe('Server.extend', () => {
+  it('extends the server with new methods', async () => {
+    const extendedServer = server.extend({ newMethod: { paramsSchema: z.tuple([z.string()]), resultSchema: z.string(), handler: async (params) => `Hello, ${params[0]}!` } });
+    const result = await extendedServer.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'newMethod',
+      params: ['Dan'],
+    });
+    expect(result).toMatchObject({ jsonrpc: '2.0', id: 1, result: 'Hello, Dan!' });
+  });
+});

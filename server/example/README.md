@@ -1,9 +1,9 @@
-# Initiator Relay Example
+# Server SDK Example
 
-This example demonstrates how to use the Initiator Relay SDK. 
+This example demonstrates how to use the server SDK. 
 
-`run-initiator-relay.ts` runs an example Initiator Relay server.
-`run-responder-stub.ts` runs a very basic responder for testing.
+`run-initiator-server.ts` runs an example Initiator server.
+`run-responder-server.ts` runs a very basic responder for testing.
 
 ## Running tests
 

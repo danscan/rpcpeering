@@ -1,3 +1,3 @@
-# @danscan's RPC Discovery Protocol
+# @danscan's RPC Peering Protocol
 
-A simple protocol for discovering and establishing remote RPC sessions between arbitrary apps.
+A simple protocol for creating RPC relays between peer applications.

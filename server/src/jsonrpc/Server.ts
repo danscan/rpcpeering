@@ -40,6 +40,10 @@ export type Methods = Record<string, MethodHandler<any, any>>;
 export class Server<TMethods extends Methods> {
   constructor(private readonly methods: TMethods) {}
 
+  extend<TExtendedMethods extends Methods>(methods: TExtendedMethods) {
+    return new Server<TMethods & TExtendedMethods>({ ...this.methods, ...methods });
+  }
+
   async handle(
     request: Record<string, unknown> | Record<string, unknown>[]
   ): Promise<JSONRPCResponse | JSONRPCResponseBatch | void> {
