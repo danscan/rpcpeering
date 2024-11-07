@@ -9,33 +9,24 @@ export class PeeringURI {
   static readonly SCHEME = 'danscanrpc-peering@v1';
 
   /**
-   * The URL of the peer
+   * The URL of the peering server for the proposed session
    */
   url: string;
-
-  /**
-   * The cryptographically-random ID for the session to be established
-   */
-  sessionId: string;
 
   /**
    * Parses a new PeeringURI from a URL string
    */
   static fromString(str: string) {
     // Split the URL into scheme and contents
-    const [scheme, urlContents] = str.split(':');
+    const [scheme, peeringServerUrl] = str.split(':');
 
     // Check the scheme
     if (scheme !== PeeringURI.SCHEME) throw new PeeringURI.ERRORS.IncorrectSchemeError(scheme);
     // Check the URL contents
-    if (!urlContents) throw new PeeringURI.ERRORS.InvalidFormatError();
-
-    // Split the URL contents into the relay URL and session ID
-    const [relayUrl, sessionId] = urlContents.split('@');
-    if (!relayUrl) throw new PeeringURI.ERRORS.InvalidFormatError();
+    if (!peeringServerUrl) throw new PeeringURI.ERRORS.InvalidFormatError();
 
     // Return the PeeringURI
-    return new PeeringURI(relayUrl, sessionId);
+    return new PeeringURI(peeringServerUrl);
   }
 
   /**
@@ -44,18 +35,15 @@ export class PeeringURI {
   constructor(
     /** The URL of the initiator relay */
     url: string,
-    /** The cryptographically-random ID for the session to be established */
-    sessionId: string,
   ) {
     this.url = url;
-    this.sessionId = sessionId;
   }
 
   /**
    * Convert the PeeringURI to a URL string
    */
   toString() {
-    return `${PeeringURI.SCHEME}:${this.sessionId}@${this.url}`;
+    return `${PeeringURI.SCHEME}:${this.url}`;
   }
 
   // –
@@ -82,7 +70,7 @@ export class PeeringURI {
      */
     InvalidFormatError: class InvalidFormatError extends Error {
       name = 'InvalidFormatError';
-      message = `Invalid peering URL format. Expected format: '${PeeringURI.SCHEME}:[sessionId]@[url]'`;
+      message = `Invalid peering URL format. Expected format: '${PeeringURI.SCHEME}:[url]'`;
     },
   }
 }
