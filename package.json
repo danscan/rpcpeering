@@ -10,7 +10,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@danscan/zod-jsonrpc": "^2.0.2",
+    "@danscan/zod-jsonrpc": "^2.1.0",
     "zod": "^3.23.8"
   }
 }

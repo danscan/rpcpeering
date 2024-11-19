@@ -6,7 +6,12 @@ export class PeeringURI {
   /**
    * The versioned peering URI scheme
    */
-  static readonly SCHEME = 'danscanrpc-peering@v1';
+  static readonly SCHEME = 'rpcpeering';
+
+  /**
+   * The primary topic requested of the responder, used to filter the responder apps shown to the user.
+   */
+  topic: string;
 
   /**
    * The URL of the peering server for the proposed session
@@ -18,7 +23,11 @@ export class PeeringURI {
    */
   static fromString(str: string) {
     // Split the URL into scheme and contents
-    const [scheme, peeringServerUrl] = str.split(':');
+    const [schemePart, peeringServerUrl] = str.split(':');
+
+    // Split the scheme part into the scheme and topic
+    const [scheme, ...topicParts] = schemePart.split('+');
+    const topic = topicParts.join('+'); // Anything after the first `+` is the topic, which may include `+` characters
 
     // Check the scheme
     if (scheme !== PeeringURI.SCHEME) throw new PeeringURI.ERRORS.IncorrectSchemeError(scheme);
@@ -26,7 +35,7 @@ export class PeeringURI {
     if (!peeringServerUrl) throw new PeeringURI.ERRORS.InvalidFormatError();
 
     // Return the PeeringURI
-    return new PeeringURI(peeringServerUrl);
+    return new PeeringURI(decodeURIComponent(peeringServerUrl), topic);
   }
 
   /**
@@ -35,15 +44,18 @@ export class PeeringURI {
   constructor(
     /** The URL of the initiator relay */
     url: string,
+    /** The primary topic requested of the responder */
+    topic: string,
   ) {
     this.url = url;
+    this.topic = topic;
   }
 
   /**
    * Convert the PeeringURI to a URL string
    */
   toString() {
-    return `${PeeringURI.SCHEME}:${this.url}`;
+    return `${PeeringURI.SCHEME}+${this.topic}:${encodeURIComponent(this.url)}`;
   }
 
   // –
@@ -70,7 +82,7 @@ export class PeeringURI {
      */
     InvalidFormatError: class InvalidFormatError extends Error {
       name = 'InvalidFormatError';
-      message = `Invalid peering URL format. Expected format: '${PeeringURI.SCHEME}:[url]'`;
+      message = `Invalid peering URL format. Expected format: '${PeeringURI.SCHEME}+[topic]:[url]'`;
     },
   }
 }
