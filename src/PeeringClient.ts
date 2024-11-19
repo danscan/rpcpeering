@@ -9,6 +9,7 @@ export type PeeringClient = {
   disconnect: () => Promise<void>;
 };
 
+/** Creates a new PeeringClient */
 export function createPeeringClient(sendRequest: SendRequestFn): PeeringClient {
   const client =  createClient({
     'rpcpeering1/peer': method({
@@ -41,4 +42,5 @@ export class PeeringClientError extends Error {
   }
 }
 
+/** The type of the `sendRequest` function passed to `createPeeringClient` */
 type SendRequestFn = (request: Record<string, any>) => Promise<Record<string, any>>;

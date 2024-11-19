@@ -1,3 +1,6 @@
+import { createPeeringClient, type PeeringClient } from "./PeeringClient";
+import type { PeeringSessionProposal } from "./PeeringSessionProposal";
+
 /**
  * Constructs a URI for connecting to a peer, implementing
  * the `toString` method, and a static `fromString` function
@@ -16,7 +19,7 @@ export class PeeringURI {
   /**
    * The URL of the peering server for the proposed session
    */
-  url: string;
+  url: URL;
 
   /**
    * Parses a new PeeringURI from a URL string
@@ -47,7 +50,7 @@ export class PeeringURI {
     /** The primary topic requested of the responder */
     topic: string,
   ) {
-    this.url = url;
+    this.url = new URL(url);
     this.topic = topic;
   }
 
@@ -55,7 +58,19 @@ export class PeeringURI {
    * Convert the PeeringURI to a URL string
    */
   toString() {
-    return `${PeeringURI.SCHEME}+${this.topic}:${encodeURIComponent(this.url)}`;
+    return `${PeeringURI.SCHEME}+${this.topic}:${encodeURIComponent(this.url.toString())}`;
+  }
+
+  /** Opens a Peering URI, establishing a peering connection and returning an object with the peer's session proposal and a `disconnect` function */
+  async open(
+    /** The function used to send requests to the peering server */
+    sendRequest: (serverUrl: URL, request: Record<string, any>) => Promise<Record<string, any>>,
+    /** The proposal to send to the peering server, without the `topic` field, which is set to this PeeringURI's topic */
+    proposal: Omit<PeeringSessionProposal, 'topic'>,
+  ): Promise<{ disconnect: PeeringClient['disconnect'], peerProposal: PeeringSessionProposal }> {
+    const client = createPeeringClient(async (request) => sendRequest(this.url, request));
+    const peerProposal = await client.peer({ topic: this.topic, ...proposal });
+    return { disconnect: client.disconnect, peerProposal };
   }
 
   // –
