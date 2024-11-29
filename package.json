@@ -1,6 +1,19 @@
 {
-  "name": "danscanrpc",
-  "module": "src/index.ts",
+  "name": "rpcpeering",
+  "version": "0.1.0",
+  "description": "A user-centric app interoperation protocol for establishing RPC connections between apps",
+  "repository": "https://github.com/danscan/rpcpeering",
+  "homepage": "https://github.com/danscan/rpcpeering",
+  "bugs": "https://github.com/danscan/rpcpeering/issues",
+  "keywords": [
+    "rpc peering",
+    "rpc protocol",
+    "walletconnect alternative"
+  ],
+  "scripts": {
+    "build": "bun run tsc",
+    "prepare": "bun run build"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@vue/cli-service": "^5.0.8"
@@ -8,9 +21,12 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
-  "type": "module",
   "dependencies": {
     "@danscan/zod-jsonrpc": "^2.1.0",
     "zod": "^3.23.8"
-  }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module"
 }
