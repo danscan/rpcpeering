@@ -43,13 +43,9 @@ Content-Type: application/json
 }
 ```
 
-3. The initiator's peering server evaluates the session proposal. If the proposal is accepted, the initiator sends its own session proposal to the responder's peering server. The initiator's proposal includes the URL of the initiator's Ethereum callback API, where the responder can send callback requests, and an advertisement of other topics its peering server supports.
+3. The initiator's peering server evaluates the session proposal. If the proposal is accepted, the initiator sends a response containing its own session proposal, including the URL of the initiator's Ethereum callback API, where the responder can send callback requests, and an advertisement of other topics its peering server supports.
 
-```http
-POST /rpcpeering HTTP/1.1
-Host: wallet.example.com
-Content-Type: application/json
-
+```json
 {
   "url": "https://portfolio-tracker.example.com/rpcpeering/ethereum",
   "advertise": ["ethereum", "solana"],
