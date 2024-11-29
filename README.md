@@ -30,22 +30,43 @@ const peeringUri = new PeeringURI(
 // Display the peering URI to the user in a QR code so they can scan it with their waller app
 ```
 
-2. The user scans the QR code with their wallet app, which opens the peering URI in the responder wallet app. The wallet app sends a session proposal to the initiator's peering server.
+2. The user scans the QR code with their wallet app, which opens the peering URI in the responder wallet app. The wallet app sends a session proposal to the initiator's peering server. It includes the URL of the responder's Ethereum JSON-RPC API and an advertisement of other topics its peering server supports.
 
-```json
+```http
+POST /rpcpeering HTTP/1.1
+Host: portfolio-tracker.example.com
+Content-Type: application/json
+
 {
-  "url": "https://wallet.example.com/rpcpeering/ethereum", // The URL of the responder's Ethereum JSON-RPC API
-  "advertise": ["ethereum", "solana"], // The topics the responder app supports. Here, the responder advertises to the tracker app that it also supports the Solana JSON-RPC API.
+  "url": "https://wallet.example.com/rpcpeering/ethereum",
+  "advertise": ["ethereum", "solana"],
 }
 ```
 
-3. The initiator's peering server evaluates the session proposal. If the proposal is accepted, the initiator sends its own session proposal to the responder's peering server.
+3. The initiator's peering server evaluates the session proposal. If the proposal is accepted, the initiator sends its own session proposal to the responder's peering server. The initiator's proposal includes the URL of the initiator's Ethereum callback API, where the responder can send callback requests, and an advertisement of other topics its peering server supports.
 
-```json
+```http
+POST /rpcpeering HTTP/1.1
+Host: wallet.example.com
+Content-Type: application/json
+
 {
-  "url": "https://portfolio-tracker.example.com/rpcpeering/ethereum", // The URL of the initiator's Ethereum callback API, where the responder can send callback requests
-  "advertise": ["ethereum", "solana"], // The topics the initiator app supports. Here, the initiator advertises to the wallet app that it also supports the Solana JSON-RPC API.
+  "url": "https://portfolio-tracker.example.com/rpcpeering/ethereum",
+  "advertise": ["ethereum", "solana"],
 }
 ```
 
 4. The initiator and responder can now send Ethereum JSON-RPC requests to each other over the URLs specified in their session proposals.
+
+Here's an example of the initiator app sending a `eth_getBlockByNumber` request to the responder app:
+
+```http
+POST /rpcpeering/ethereum HTTP/1.1
+Host: wallet.example.com
+Content-Type: application/json
+
+{
+  "method": "eth_getBlockByNumber",
+  "params": ["0x1b", true],
+}
+```
